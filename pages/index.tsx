@@ -1,7 +1,54 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+import type { NextPage } from "next";
+import Head from "next/head";
+import Image from "next/image";
+import styles from "../styles/Home.module.css";
+import { Howl, Howler, HowlOptions } from "howler";
+
+const kanyeSprite: HowlOptions["sprite"] = {
+  UH: [0, 400],
+  HUH: [3220, 580],
+  "HYAHH!": [3810, 500],
+  "UH-UH-HAAW": [4320, 880],
+  "DU-DUH-DAH": [5200, 680],
+  "HEH!": [6600, 450],
+  "HAAH!": [7050, 679],
+  "UH!!": [7730, 610],
+  Ooooooo: [8340, 810],
+  "(deep-breath)": [9150, 750],
+  "AAAAAAAAAA-OOOWWW!": [9890, 1740],
+  "OOOO!": [12680, 650],
+  WHAAAAAA: [13330, 690],
+  "DOO DOO": [14771, 1125],
+  "HWUAH!": [15896, 444],
+  AHHHHHH: [18280, 700],
+  MASANOONAA: [19478, 1282],
+  YEHHHOOOON: [20760, 1178],
+  "AHH-HA-HA-HA-HAA": [21940, 1500],
+  OOOoooWAAa: [23440, 790],
+  "AH DA DAH DAHR RAH": [24220, 1760],
+  EESCRONG: [27960, 810],
+  "RYAHH!": [28770, 630],
+  "HRHEH!": [29740, 560],
+  "WOO!": [30308, 472],
+  "OCKIT OGUT SIGIT YEEH": [30780, 1820],
+  AAAAHHHHHH: [33208, 786],
+  "EEYAAH EEYAAH!": [33994, 876],
+  NAHHHHHHHHHHH: [34870, 1674],
+  MAHHHHHHHHHHH: [36544, 2936],
+  "HEH HUH? UH": [49840, 1660],
+  "HEH?! WUTCHOO WHUP!": [52960, 2200],
+  "WAANA  NUNA WUNA ???": [55160, 2470],
+  "HOOTINANINNO EY-HAY HAAY": [57630, 2810],
+  rambling: [65600, 3900],
+  laughing: [69500, 1250],
+};
+
+const kanye = new Howl({
+  src: ["/all-kanye-sounds.mp3"],
+  sprite: kanyeSprite,
+});
+
+const COLOR_PALETTE = ["red", "yellow", "green", "blue", "purple", "pink"];
 
 const Home: NextPage = () => {
   return (
@@ -12,61 +59,46 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.tsx</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+      <main>
+        <div className="grid grid-cols-2 gap-4 w-11/12 mx-auto sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          {Object.keys(kanyeSprite).map((label, index) => (
+            <div className="flex justify-center align-middle" key={label}>
+              <SoundPad
+                key={label}
+                label={label}
+                color={COLOR_PALETTE[index % COLOR_PALETTE.length]}
+                onClick={() => {
+                  kanye.play(label);
+                }}
+              />
+            </div>
+          ))}
         </div>
       </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
     </div>
-  )
+  );
+};
+
+type SoundPadProps = {
+  color?: string;
+  label: string;
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+};
+
+function SoundPad({ color = "red", label, onClick }: SoundPadProps) {
+  return (
+    <>
+      <button className={styles.pushable} onClick={onClick}>
+        <span className={styles.shadow}></span>
+        <span
+          className={`${styles.edge} bg-gradient-to-l from-${color}-700 via-${color}-600 to-${color}-700`}
+        ></span>
+        <span className={`${styles.front} bg-${color}-500`}>
+          <span className="px-4 break-all">{label}</span>
+        </span>
+      </button>
+    </>
+  );
 }
 
-export default Home
+export default Home;
