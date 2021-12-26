@@ -48,7 +48,32 @@ const kanye = new Howl({
   sprite: kanyeSprite,
 });
 
-const COLOR_PALETTE = ["red", "yellow", "green", "blue", "purple", "pink"];
+const COLOR_PALETTE = {
+  red: {
+    background: "from-red-700 via-red-600 to-red-700",
+    foreground: "bg-red-500",
+  },
+  yellow: {
+    background: "from-yellow-700 via-yellow-600 to-yellow-700",
+    foreground: "bg-yellow-500",
+  },
+  green: {
+    background: "from-green-700 via-green-600 to-green-700",
+    foreground: "bg-green-500",
+  },
+  blue: {
+    background: "from-blue-700 via-blue-600 to-blue-700",
+    foreground: "bg-blue-500",
+  },
+  purple: {
+    background: "from-purple-700 via-purple-600 to-purple-700",
+    foreground: "bg-purple-500",
+  },
+  pink: {
+    background: "from-pink-700 via-pink-600 to-pink-700",
+    foreground: "bg-pink-500",
+  },
+};
 
 const Home: NextPage = () => {
   return (
@@ -66,7 +91,11 @@ const Home: NextPage = () => {
               <SoundPad
                 key={label}
                 label={label}
-                color={COLOR_PALETTE[index % COLOR_PALETTE.length]}
+                color={
+                  Object.keys(COLOR_PALETTE)[
+                    index % Object.keys(COLOR_PALETTE).length
+                  ] as SoundPadColor
+                }
                 onClick={() => {
                   kanye.play(label);
                 }}
@@ -79,8 +108,9 @@ const Home: NextPage = () => {
   );
 };
 
+type SoundPadColor = keyof typeof COLOR_PALETTE;
 type SoundPadProps = {
-  color?: string;
+  color?: SoundPadColor;
   label: string;
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 };
@@ -93,7 +123,7 @@ function SoundPad({ color = "red", label, onClick }: SoundPadProps) {
         <span
           className={`${styles.edge} bg-gradient-to-l from-${color}-700 via-${color}-600 to-${color}-700`}
         ></span>
-        <span className={`${styles.front} bg-${color}-500`}>
+        <span className={`${styles.front} ${COLOR_PALETTE[color].foreground}`}>
           <span className="px-4 break-all">{label}</span>
         </span>
       </button>
